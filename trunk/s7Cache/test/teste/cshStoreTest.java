@@ -38,6 +38,8 @@ import static org.junit.Assert.*;
  */
 public class cshStoreTest {
 
+    static tmtEvent _life;
+
     /**
      *
      */
@@ -50,6 +52,8 @@ public class cshStoreTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.out.println("setUpClass");
+        _life = new tmtEvent("cshStoreTest", null);
     }
 
     /**
@@ -58,6 +62,10 @@ public class cshStoreTest {
      */
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.out.println("tearDownClass");
+
+        _life.Stop();
+        System.out.println(_life.toString());
     }
 
     /**
@@ -65,6 +73,10 @@ public class cshStoreTest {
      */
     @Before
     public void setUp() {
+        System.out.println("setUp");
+        
+        _life.addEvent(new tmtEvent("setUp",null));
+
     }
 
     /**
@@ -72,6 +84,9 @@ public class cshStoreTest {
      */
     @After
     public void tearDown() {
+        System.out.println("tearDown");
+
+        _life.Stop();
     }
 
     /**
@@ -80,53 +95,65 @@ public class cshStoreTest {
     @Test
     public void testRandomGet() {
 
-        int number_of_elements = 1000000;
+        tmtEvent thisevent=_life.LastEvent();
+
+        thisevent.addEvent(new tmtEvent("testRandomGet", null));
+
+        int number_of_elements = 2000000;
         int number_of_tests = 200000;
 
         System.out.println("testeRandomGet");
         System.out.println("==============");
-        System.out.printf("%d %s\n",number_of_elements, "elementos");
-        System.out.printf("%d %s\n",number_of_tests, "testes");
+        System.out.printf("%d %s\n",number_of_elements, "elements");
+        System.out.printf("%d %s\n",number_of_tests, "tests");
 
-        // no limit testes
-        // every add with result in a, de facto, add
+        // no limit tests
+        // every add will result in a, de facto, add
         cshStore cs=new cshStore(number_of_elements, 0);
+
+        thisevent.LastEvent().addEvent(new tmtEvent("add 1000000 string",null));
 
         // autogen 10000000 strings
         for(int i=0;i<number_of_elements;i++) {
             // add_no_test doesn't verify pre-existance of a given key
-            // add, even is there exist one
-            cs.add_no_test("a-".concat(Integer.toString(i)),"iuyiuyiuyiuyiuyiuy:".concat(Integer.toString(i)),10);
+            // add, even is there exists one
+            String newKey="a-".concat(Integer.toString(i));
+            Object newObject="iuyiuyiuyiuyiuyiuy:".concat(Integer.toString(i));
+            cs.add_no_test(newKey, newObject,10);
         }
+
+        thisevent.LastEvent().StopLastEvent();
 
         // aply sorting to the _indexes List
         // in order to use binary search
         cs.sort();
 
-        String s0="";
-        String sV="";
-        Object o;
-
         java.util.Random gen = new java.util.Random();
+
+        thisevent.LastEvent().addEvent(new tmtEvent("get ".concat(Integer.toString(number_of_tests).concat(" elements")), gen));
 
         for(int k = 0; k < number_of_tests ; k++) {
             double r = gen.nextDouble() * number_of_elements;
 
             // select a random element's key
-            s0=cs.getItems().get((int)r).Key();
+            String s0=cs.getItems().get((int)r).Key();
 
             // ... and the corresponding value
-            sV=((String)cs.getItems().get((int)r).Value());
+            String sV=((String)cs.getItems().get((int)r).Value());
             
             // try to get the value of that key
-            o = cs.get(s0);
+            Object o = cs.get(s0);
 
             // teste for NULL; should not be null
             assertNotNull(o);
 
-            // teste for not equal; should be equal
-            assert(!o.equals(sV));
+            // teste for equal; should be equal
+            assertEquals(o.equals(sV), true);
         }
+        
+        thisevent.LastEvent().StopLastEvent();
+        thisevent.StopLastEvent();
+
     }
 
 }
