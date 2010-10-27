@@ -36,6 +36,8 @@ package teste;
  */
 public class cshStore {
 
+    // TODO:
+
     private int _capacity=0;
     private int _maxsize=0;
     private int _actualsize=0;
@@ -128,10 +130,12 @@ public class cshStore {
     }
 
     /**
-     *
-     * @param p_key
-     * @param p_value
-     * @param p_size
+     * Adds a new object to the cache with pre-existance validation. If an
+     * object with the same kay already exists, will be removed and this new one
+     * should be addedd to the end of the cache.
+     * @param p_key Key of the object to add
+     * @param p_value Object to add
+     * @param p_size Estimated, if not known, size of the Object (bytes)
      */
     public void add(String p_key, Object p_value, int p_size) {
 
@@ -152,10 +156,11 @@ public class cshStore {
     }
 
     /**
-     *
-     * @param p_key
-     * @param p_value
-     * @param p_size
+     * Adds a new object to the cache with no pre-existance validation. Doesn't
+     * matter if an object with the same kay already exists; there will be 2.
+     * @param p_key Key of the object to add
+     * @param p_value Object to add
+     * @param p_size Estimated, if not known, size of the Object (bytes)
      */
     public void add_no_test(String p_key, Object p_value, int p_size) {
         _items.add(new cshItem(p_key, p_value, p_size));
