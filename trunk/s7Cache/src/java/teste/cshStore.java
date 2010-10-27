@@ -30,15 +30,25 @@ package teste;
     teste::cshStore.java
 
  */
+/**
+ * The cache storage
+ * @author David Fernandes
+ */
 public class cshStore {
 
-    private int _capacity;
-    private int _maxsize;
-    private int _actualsize;
+    private int _capacity=0;
+    private int _maxsize=0;
+    private int _actualsize=0;
+    private boolean _indexSorted=true;
 
     private java.util.List<cshIndex> _index;
     private java.util.List<cshItem> _items;
 
+    /**
+     * Constructor
+     * @param p_capacity Maximum number of elements supported
+     * @param p_maxsize Maximum total capacity of the store (in bytes)
+     */
     public cshStore(int p_capacity, int p_maxsize) {
         _capacity = p_capacity;
         _maxsize = p_maxsize;
@@ -48,41 +58,109 @@ public class cshStore {
         _items = new java.util.ArrayList<cshItem>();
     }
 
+    /**
+     * Geter of the indexes list
+     * @return List<cshIndexes)
+     */
+    public java.util.List<cshIndex> getIndexes() {
+        return _index;
+    }
+
+/**
+     * Geter of the items list
+     * @return List<cshItems)
+     */
+    public java.util.List<cshItem> getItems() {
+        return _items;
+    }
+
+    /**
+     * Try to get the Item with teh specified key
+     * @param p_key Key to get
+     * @return cshItem
+     */
     public Object get(String p_key) {
-        int i=get_index(p_key.hashCode());
+        int i=get_index(_index, p_key.hashCode());
         if(i==-1)
             return null;
         else
             return _items.get(_index.get(i).Index()).Value();
     }
 
-    private int get_index(int p_hashcode) {
+    /**
+     * Try to get the Idnex for a specified hashcode. Uses a binary recursive search.
+     * @param l
+     * @param p_hashcode
+     * @return Index for the Items list
+     */
+    private int get_index(java.util.List<cshIndex> l, int p_hashcode) {
 
-        for(int i=0;i<_index.size();i++) {
-            if(_index.get(i).Hash()==p_hashcode)
-                return i;
+        int ls = l.size();
+
+        if(ls == 0) return -1;
+
+        if(ls == 1) {
+            return l.get(0).Hash()==p_hashcode ? 0 : -1;
         }
-        return -1;
+
+        int mid = ls/2;
+        int k;
+
+        if(p_hashcode == l.get(mid).Hash()) return mid;
+
+        if(p_hashcode<l.get(mid).Hash())
+        {
+            k = get_index(l.subList(0, mid), p_hashcode);
+            if(k==-1) return -1;
+            return k;
+        } else {
+            k = get_index(l.subList(mid, ls), p_hashcode);
+            if(k==-1) return -1;
+            return mid+k;
+        }
     }
 
+    /**
+     * Sorts the Indexes list
+     */
+    public void sort() {
+         java.util.Collections.sort(_index);
+    }
+
+    /**
+     *
+     * @param p_key
+     * @param p_value
+     * @param p_size
+     */
     public void add(String p_key, Object p_value, int p_size) {
+
         int hc = p_key.hashCode();
-        int i = get_index(hc);
-        if(i==-1) {
-            _items.add(new cshItem(p_key, p_value, p_size));
-            _index.add(new cshIndex(_index.size(), hc));
-        } else {
+        int i = get_index(_index, hc);
+
+        if(i>-1) {
             int j = _index.get(i).Index();
             _actualsize -= _items.get(j).Size();
             _items.remove(j);
             _index.remove(i);
-            add_no_test(p_key,p_value,p_size);
         }
+
+        add_no_test(p_key,p_value,p_size);
+
+        if(_index.size()>1 && hc < _index.get(_index.size()-2).Hash())
+            sort();
     }
 
-    private void add_no_test(String p_key, Object p_value, int p_size) {
+    /**
+     *
+     * @param p_key
+     * @param p_value
+     * @param p_size
+     */
+    public void add_no_test(String p_key, Object p_value, int p_size) {
         _items.add(new cshItem(p_key, p_value, p_size));
         _index.add(new cshIndex(_index.size(), p_key.hashCode()));
+        _actualsize += p_size;
     }
 
 }

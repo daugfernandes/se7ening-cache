@@ -30,7 +30,7 @@ package teste;
     teste::cshIndex.java
 
  */
-public class cshIndex {
+public class cshIndex implements Comparable<cshIndex> {
 
     private int _i;
     private int _hashcode;
@@ -49,7 +49,8 @@ public class cshIndex {
     }
 
     public int compareTo(cshIndex o) {
-        return this._hashcode - o._hashcode;
+        if(this._hashcode<o._hashcode) return -1;
+        if(this._hashcode>o._hashcode) return 1;
+        return 0;
     }
-
 }
