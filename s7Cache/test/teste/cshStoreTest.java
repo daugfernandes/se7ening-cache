@@ -33,56 +33,100 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author david
+ * Unit teste for cshStore
+ * @author David Fernandes
  */
 public class cshStoreTest {
 
+    /**
+     *
+     */
     public cshStoreTest() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
 
+    /**
+     *
+     */
     @Before
     public void setUp() {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of get method, of class cshStore.
+     * Test set/get of a bunch of cshItems. Creates a big store and test-get some random keys.
      */
     @Test
-    public void testGet() {
-        System.out.println("get");
-        String p_key = "a1";
-        cshStore instance = new cshStore(100, 2000);
-        Object result = instance.get(p_key);
-        assertEquals(result, null);
-    }
+    public void testRandomGet() {
 
-    /**
-     * Test of add method, of class cshStore.
-     */
-    @Test
-    public void testAdd() {
-        System.out.println("add");
-        cshStore instance = new cshStore(10, 2000);
+        int number_of_elements = 1000000;
+        int number_of_tests = 200000;
 
-        instance.add("a1", "david", 5);
-        instance.add("a2", "davidfernandes", 14);
+        System.out.println("testeRandomGet");
+        System.out.println("==============");
+        System.out.printf("%d %s\n",number_of_elements, "elementos");
+        System.out.printf("%d %s\n",number_of_tests, "testes");
 
-        Object result = instance.get("a1");
-        assert(result==null );
+        // no limit testes
+        // every add with result in a, de facto, add
+        cshStore cs=new cshStore(number_of_elements, 0);
 
+        // autogen 10000000 strings
+        for(int i=0;i<number_of_elements;i++) {
+            // add_no_test doesn't verify pre-existance of a given key
+            // add, even is there exist one
+            cs.add_no_test("a-".concat(Integer.toString(i)),"iuyiuyiuyiuyiuyiuy:".concat(Integer.toString(i)),10);
+        }
+
+        // aply sorting to the _indexes List
+        // in order to use binary search
+        cs.sort();
+
+        String s0="";
+        String sV="";
+        Object o;
+
+        java.util.Random gen = new java.util.Random();
+
+        for(int k = 0; k < number_of_tests ; k++) {
+            double r = gen.nextDouble() * number_of_elements;
+
+            // select a random element's key
+            s0=cs.getItems().get((int)r).Key();
+
+            // ... and the corresponding value
+            sV=((String)cs.getItems().get((int)r).Value());
+            
+            // try to get the value of that key
+            o = cs.get(s0);
+
+            // teste for NULL; should not be null
+            assertNotNull(o);
+
+            // teste for not equal; should be equal
+            assert(!o.equals(sV));
+        }
     }
 
 }

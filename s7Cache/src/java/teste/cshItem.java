@@ -33,6 +33,7 @@ package teste;
 public class cshItem {
 
     private int _hashcode;
+    private String _key;
     private Object _value;
     private int _size;
 
@@ -41,10 +42,15 @@ public class cshItem {
         _hashcode = p_key.hashCode();
         _value = p_value;
         _size = p_size;
+        _key = p_key;
     }
 
     public int Hash() {
         return _hashcode;
+    }
+
+    public String Key() {
+        return _key;
     }
 
     public Object Value() {
