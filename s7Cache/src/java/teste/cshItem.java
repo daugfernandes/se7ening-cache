@@ -36,6 +36,7 @@ public class cshItem {
     private String _key;
     private Object _value;
     private int _size;
+    private int _hits;
 
     cshItem(String p_key, Object p_value, int p_size) {
 
@@ -43,6 +44,7 @@ public class cshItem {
         _value = p_value;
         _size = p_size;
         _key = p_key;
+        _hits = 0;
     }
 
     public int Hash() {
@@ -59,5 +61,13 @@ public class cshItem {
 
     public int Size() {
         return _size;
+    }
+
+    public int Hits() {
+        return _hits;
+    }
+
+    protected void Hit() {
+        _hits += 1;
     }
 }

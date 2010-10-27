@@ -39,6 +39,7 @@ import static org.junit.Assert.*;
 public class cshStoreTest {
 
     static tmtEvent _life;
+    static cshStore cs;
 
     /**
      *
@@ -66,6 +67,10 @@ public class cshStoreTest {
 
         _life.Stop();
         System.out.println(_life.toString());
+        
+        cs.Life().Stop();
+        System.out.println(cs.Life().toString());
+
     }
 
     /**
@@ -100,7 +105,7 @@ public class cshStoreTest {
         thisevent.addEvent(new tmtEvent("testRandomGet", null));
 
         int number_of_elements = 2000000;
-        int number_of_tests = 200000;
+        int number_of_tests = 20;
 
         System.out.println("testeRandomGet");
         System.out.println("==============");
@@ -109,9 +114,9 @@ public class cshStoreTest {
 
         // no limit tests
         // every add will result in a, de facto, add
-        cshStore cs=new cshStore(number_of_elements, 0);
+        cs=new cshStore(number_of_elements, 0);
 
-        thisevent.LastEvent().addEvent(new tmtEvent("add 1000000 string",null));
+        thisevent.LastEvent().addEvent(new tmtEvent("add ".concat(Integer.toString(number_of_elements)).concat( "strings"),null));
 
         // autogen 10000000 strings
         for(int i=0;i<number_of_elements;i++) {
@@ -148,7 +153,7 @@ public class cshStoreTest {
             assertNotNull(o);
 
             // teste for equal; should be equal
-            assertEquals(o.equals(sV), true);
+            assertEquals(((cshItem)o).Value().equals(sV), true);
         }
         
         thisevent.LastEvent().StopLastEvent();

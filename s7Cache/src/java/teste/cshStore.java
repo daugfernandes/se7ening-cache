@@ -36,12 +36,18 @@ package teste;
  */
 public class cshStore {
 
-    // TODO:
+    // TODO: onAdd check if there is space and/or capacity
 
     private int _capacity=0;
     private int _maxsize=0;
     private int _actualsize=0;
     private boolean _indexSorted=true;
+    private int _totalgets;
+    private int _totalhits;
+    private int _sizeremoved;
+
+    // TODO: register Life
+    private tmtEvent _life;
 
     private java.util.List<cshIndex> _index;
     private java.util.List<cshItem> _items;
@@ -55,9 +61,14 @@ public class cshStore {
         _capacity = p_capacity;
         _maxsize = p_maxsize;
         _actualsize = 0;
+        _totalgets = 0;
+        _totalhits = 0;
+        _sizeremoved = 0;
 
         _index = new java.util.ArrayList<cshIndex>();
         _items = new java.util.ArrayList<cshItem>();
+
+        _life = new tmtEvent("cshStore starting", null);
     }
 
     /**
@@ -82,13 +93,30 @@ public class cshStore {
      * @return cshItem
      */
     public Object get(String p_key) {
+        _totalgets += 1;
+
+        _life.addEvent(new tmtEvent("get:".concat(p_key), null));
         int i=get_index(_index, p_key.hashCode());
+        _life.LastEvent().Stop();
+        
         if(i==-1)
             return null;
-        else
-            return _items.get(_index.get(i).Index()).Value();
+        else {
+            cshItem csI = _items.get(_index.get(i).Index());
+            csI.Hit();
+            _totalhits += 1;
+            return csI;
+        }
     }
-
+    
+    /**
+     * Life of the storage
+     * @return A tmtEvent
+     */
+    public tmtEvent Life() {
+        return _life;
+    }
+    
     /**
      * Try to get the Idnex for a specified hashcode. Uses a binary recursive search.
      * @param l
@@ -126,7 +154,9 @@ public class cshStore {
      * Sorts the Indexes list
      */
     public void sort() {
-         java.util.Collections.sort(_index);
+        _life.addEvent(new tmtEvent("sort",null));
+        java.util.Collections.sort(_index);
+        _life.LastEvent().Stop();
     }
 
     /**
@@ -144,7 +174,9 @@ public class cshStore {
 
         if(i>-1) {
             int j = _index.get(i).Index();
-            _actualsize -= _items.get(j).Size();
+            int sz = _items.get(j).Size();
+            _actualsize -= sz;
+            _sizeremoved += sz;
             _items.remove(j);
             _index.remove(i);
         }
