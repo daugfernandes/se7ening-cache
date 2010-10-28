@@ -30,24 +30,46 @@ package teste;
     teste::cshIndex.java
 
  */
+/**
+ * An index class for linked list management
+ * @author David Fernandes
+ */
 public class cshIndex implements Comparable<cshIndex> {
 
     private int _i;
     private int _hashcode;
 
+    /**
+     * Constructor
+     * @param p_i Pointing index to a linked list
+     * @param p_hash HashCode for sorting. Refer to compareTo method.
+     */
     public cshIndex(int p_i, int p_hash) {
         _i = p_i;
         _hashcode = p_hash;
     }
 
+    /**
+     * Selector
+     * @return
+     */
     public int Hash() {
         return _hashcode;
     }
 
+    /**
+     * Selector
+     * @return
+     */
     public int Index() {
         return _i;
     }
 
+    /**
+     * Compare function needed for Collection.sort
+     * @param o
+     * @return -1 if ASC, 1 for DESC, 0 for EQUAL
+     */
     public int compareTo(cshIndex o) {
         if(this._hashcode<o._hashcode) return -1;
         if(this._hashcode>o._hashcode) return 1;

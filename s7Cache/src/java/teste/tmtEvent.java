@@ -68,7 +68,7 @@ public class tmtEvent {
     }
 
     /**
-     * Geter
+     * Selector
      * @return Event's description.
      */
     public String Name() {
@@ -76,7 +76,7 @@ public class tmtEvent {
     }
 
     /**
-     * Geter
+     * Selector
      * @return Custom object associated with the event.
      */
     public Object Bag() {
@@ -135,7 +135,7 @@ public class tmtEvent {
     }
 
     /**
-     * Geter
+     * Selector
      * @return List of sub-events
      */
     public java.util.List<tmtEvent> Events() {

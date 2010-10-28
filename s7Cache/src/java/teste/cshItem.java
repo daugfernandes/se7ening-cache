@@ -30,6 +30,10 @@ package teste;
     teste::cshItem.java
 
  */
+/**
+ *
+ * @author david
+ */
 public class cshItem {
 
     private int _hashcode;
@@ -37,36 +41,72 @@ public class cshItem {
     private Object _value;
     private int _size;
     private int _hits;
+    private long _expiration;
 
-    cshItem(String p_key, Object p_value, int p_size) {
+    cshItem(String p_key, Object p_value, int p_size, int p_expire) {
 
         _hashcode = p_key.hashCode();
         _value = p_value;
         _size = p_size;
         _key = p_key;
         _hits = 0;
+
+        // if 0, never expires => one year
+        if(p_expire==0) p_expire=60*60*24*365;
+
+        _expiration=System.currentTimeMillis()+1000*p_expire;
     }
 
+    /**
+     * Selector
+     * @return The hashcode of the Item.
+     */
     public int Hash() {
         return _hashcode;
     }
 
+    /**
+     * Selector
+     * @return The key of the Item.
+     */
     public String Key() {
         return _key;
     }
 
+    /**
+     * Selector
+     * @return The value of the Item.
+     */
     public Object Value() {
         return _value;
     }
 
+    /**
+     * Selector
+     * @return Size of the Item's value.
+     */
     public int Size() {
         return _size;
     }
 
+    /**
+     * Selector for the number of successfull hits.
+     * @return
+     */
     public int Hits() {
         return _hits;
     }
 
+    /**
+     * Selector
+     * @return Expiration date/time in absolute milliseconds.
+     */
+    public long Expire() {
+        return _expiration;
+    }
+    /**
+     * Increments the hit counter.
+     */
     protected void Hit() {
         _hits += 1;
     }
