@@ -44,8 +44,8 @@ public class NewSessionBean implements NewSessionBeanRemote, NewSessionBeanLocal
         return _store.get(p_key);
     }
 
-    public void Add(String p_key, Object p_value, int p_size) {
-        _store.add(p_key, p_value, p_size);
+    public void Add(String p_key, Object p_value, int p_size, int p_expires_in_seconds) {
+        _store.add(p_key, p_value, p_size, p_expires_in_seconds);
     }
  
 }
