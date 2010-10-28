@@ -124,7 +124,7 @@ public class cshStoreTest {
             // add, even is there exists one
             String newKey="a-".concat(Integer.toString(i));
             Object newObject="iuyiuyiuyiuyiuyiuy:".concat(Integer.toString(i));
-            cs.add_no_test(newKey, newObject,10);
+            cs.add_no_test(newKey, newObject,10,0);
         }
 
         thisevent.LastEvent().StopLastEvent();
