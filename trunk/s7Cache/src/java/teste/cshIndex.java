@@ -65,6 +65,10 @@ public class cshIndex implements Comparable<cshIndex> {
         return _i;
     }
 
+    public void setIndex(int p_newindex) {
+        _i = p_newindex;
+    }
+
     /**
      * Compare function needed for Collection.sort
      * @param o

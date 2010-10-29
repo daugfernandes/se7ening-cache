@@ -217,9 +217,11 @@ public class cshStore {
         int hc = p_key.hashCode();
         int i = get_index(_index, hc);
 
-        // test for existance. if so, the element will be removed
+        // test for existance. If so, the element will be replaced
 
         if(i > -1) {
+
+            // TODO: test for max_size
 
             int j = _index.get(i).Index();
             int sz = _items.get(j).Size();
@@ -235,6 +237,15 @@ public class cshStore {
 
         } else {
 
+            // _maxSize will be exceded
+            if(_maxSize<_actualSize+p_size)
+                while(_index.size()>0 && _maxSize<_actualSize+p_size)
+                    remove(0);
+            else
+                // capacity exceded
+                if(_items.size()>0 && _capacity <= _items.size())
+                    remove(_index.size()-1);
+
             add_no_test(p_key, p_value, p_size, p_expire_in_seconds);
 
             // as new elements are always added to the end of the Indexes list
@@ -245,6 +256,39 @@ public class cshStore {
             if(_index.size() > 1 && hc < _index.get(_index.size() - 2).Hash())
                 sort();
         }
+    }
+
+    public boolean remove(String p_key) {
+
+        int hc = p_key.hashCode();
+        int i = get_index(_index, hc);
+
+        if(i > -1)
+            return remove(i);
+        else
+            return false;
+    }
+
+
+    public boolean remove(int p_index_index) {
+
+        if(p_index_index > -1) {
+
+            int j = _index.get(p_index_index).Index();
+            _actualSize -= _items.get(j).Size();
+
+            _items.remove(j);
+            _index.remove(p_index_index);
+
+            // only readjust indexes if the removed index isn't the last one
+            if(p_index_index<_index.size())
+                for (cshIndex cI : _index)
+                    if (cI.Index() > j) cI.setIndex(cI.Index()-1);
+
+            return true;
+
+        } else
+            return false;
     }
 
     /**

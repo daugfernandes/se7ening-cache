@@ -42,11 +42,13 @@ public class cshItem implements Comparable<cshItem> {
     private int _size;
     private int _hits;
     private long _expiration;
+    private long _born;
 
     cshItem(String p_key, Object p_value, int p_size, int p_expire) {
 
         _key = p_key;
         _hashcode = p_key.hashCode();
+        _born = System.currentTimeMillis();
 
         setValue(p_value);
         setSize(p_size);
@@ -149,11 +151,11 @@ public class cshItem implements Comparable<cshItem> {
             if(this.Hits()<o.Hits())
                 return 1;
             else
-                if(this.Size()>o.Size())
-                    return this.Hits()>0 ? -1 : 1;
+                if(this._born>o._born)
+                    return -1;
                 else
-                    if(this.Size()<o.Size())
-                        return this.Hits()>0 ? 1 : -1;
+                    if(this._born<o._born)
+                        return 1;
                     else
                         return 0;
     }
