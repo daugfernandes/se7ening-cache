@@ -95,6 +95,35 @@ public class cshStoreTest {
     }
 
     /**
+     * Test chsItens sort
+     */
+    @Test
+    public void testItemsSort() {
+
+        cshStore store = new cshStore(100, 20000);
+
+        store.add("a1", "aaa1a", 10, 10);
+        store.add("a2", "aaa2a", 10, 10);
+        store.add("a3", "aaa3a", 20, 10);
+        store.add("a4", "aaa4a", 20, 10);
+        store.add("a5", "aaa5a", 30, 10);
+        store.add("a6", "aaa6a", 30, 10);
+        store.add("a7", "aaa7a", 40, 10);
+        store.add("a8", "aaa8a", 40, 10);
+
+        store.get("a1");
+        store.get("a3");
+        store.get("a5");
+        store.get("a5");
+        store.get("a7");
+        
+        java.util.Collections.sort(store.getItems());
+
+        store.sort();
+
+    }
+
+    /**
      * Test set/get of a bunch of cshItems. Creates a big store and test-get some random keys.
      */
     @Test
@@ -105,7 +134,7 @@ public class cshStoreTest {
         thisevent.addEvent(new tmtEvent("testRandomGet", null));
 
         int number_of_elements = 1000000;
-        int number_of_tests = 20000;
+        int number_of_tests = 20;
 
         System.out.println("testeRandomGet");
         System.out.println("==============");

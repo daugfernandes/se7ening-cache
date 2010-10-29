@@ -36,7 +36,7 @@ package teste;
  */
 public class tmtEvent {
 
-    boolean _isOpen;
+    boolean _isRunning;
     long _start;
     java.util.List<tmtEvent> _events;
     String _name;
@@ -51,7 +51,7 @@ public class tmtEvent {
         _start = System.currentTimeMillis();
         _events = new java.util.ArrayList<tmtEvent>();
         _bag = null;
-        _isOpen = true;
+        _isRunning = true;
     }
 
     /**
@@ -64,7 +64,7 @@ public class tmtEvent {
         _start = System.currentTimeMillis();
         _events = new java.util.ArrayList<tmtEvent>();
         _bag = p_bag;
-        _isOpen = true;
+        _isRunning = true;
     }
 
     /**
@@ -103,8 +103,8 @@ public class tmtEvent {
      * State of the event. True while operation Stop() is not used.
      * @return True is the event is still opened.
      */
-    public boolean IsOpen() {
-        return _isOpen;
+    public boolean IsRunning() {
+        return _isRunning;
     }
     
     /**
@@ -112,7 +112,7 @@ public class tmtEvent {
      */
     public void Stop() {
         _end = System.currentTimeMillis();
-        _isOpen = false;
+        _isRunning = false;
     }
 
     /**
@@ -155,23 +155,31 @@ public class tmtEvent {
     }
 
     /**
-     * Customized toString(9 method returns kind-of XML
+     * Customized toString() method returns kind-of XML
      * @param p_ident
      * @return
      */
     private String toString(String p_ident) {
 
-        String ret=p_ident.concat("<event name=\"".concat(Name()).concat("\""));
-        ret = ret.concat(" start=\"").concat(Long.toString(Start())).concat("\"");
+        String ret=p_ident.concat("<event");
         
-        if(IsOpen()) {
+        if(IsRunning()) {
             Stop();
+            ret = ret.concat(" duration=\"");
+            ret = ret.concat(Long.toString(End()-Start())).concat("\"");
+        } else {
+            ret = ret.concat(" duration=\"");
+            ret = ret.concat(Long.toString(End()-Start())).concat("\"");
+        }
+
+        ret = ret.concat(" name=\"".concat(Name()).concat("\""));
+        ret = ret.concat(" start=\"").concat(Long.toString(Start())).concat("\"");
+
+        if(IsRunning()) {
             ret = ret.concat(" end=\"").concat(Long.toString(End())).concat("\"");
-            ret = ret.concat(" duration=\"").concat(Long.toString(End()-Start())).concat("\"");
             ret = ret.concat(" status=\"OPEN\"");
         } else {
             ret = ret.concat(" end=\"").concat(Long.toString(End())).concat("\"");
-            ret = ret.concat(" duration=\"").concat(Long.toString(End()-Start())).concat("\"");
             ret = ret.concat(" status=\"CLOSED\"");
         }
 

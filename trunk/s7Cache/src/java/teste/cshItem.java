@@ -34,7 +34,7 @@ package teste;
  *
  * @author david
  */
-public class cshItem {
+public class cshItem implements Comparable<cshItem> {
 
     private int _hashcode;
     private String _key;
@@ -45,16 +45,15 @@ public class cshItem {
 
     cshItem(String p_key, Object p_value, int p_size, int p_expire) {
 
-        _hashcode = p_key.hashCode();
-        _value = p_value;
-        _size = p_size;
         _key = p_key;
+        _hashcode = p_key.hashCode();
+
+        setValue(p_value);
+        setSize(p_size);
+        setExpire(p_expire);
+
         _hits = 0;
 
-        // if 0, never expires => one year
-        if(p_expire==0) p_expire=60*60*24*365;
-
-        _expiration=System.currentTimeMillis()+1000*p_expire;
     }
 
     /**
@@ -75,25 +74,41 @@ public class cshItem {
 
     /**
      * Selector
-     * @return The value of the Item.
+     * @return The object in store.
      */
     public Object Value() {
         return _value;
     }
 
+    /**
+     * Modifier
+     * @param p_value Object to store.
+     */
     public void setValue(Object p_value) {
         _value = p_value;
         _hits = 0;
     }
 
+    /**
+     * Selector
+     * @return Size of object.
+     */
     public int Size() {
         return _size;
     }
 
+    /**
+     * Modifier
+     * @param p_size Size of object.
+     */
     public void setSize(int p_size) {
         _size = p_size;
     }
 
+    /**
+     * Selector
+     * @return Number og successfull hits.
+     */
     public int Hits() {
         return _hits;
     }
@@ -105,14 +120,41 @@ public class cshItem {
     public long Expire() {
         return _expiration;
     }
+
+    /**
+     * Modifier.
+     * @param p_expire_in_seconds Total time (in seconds) to expiration. Zero if never.
+     */
+    public void setExpire(int p_expire_in_seconds) {
+        // if 0, never expires => one year
+        if(p_expire_in_seconds==0) p_expire_in_seconds=60*60*24*365;
+        _expiration=System.currentTimeMillis()+1000*p_expire_in_seconds;
+    }
+
     /**
      * Increments the hit counter.
      */
     protected void Hit() {
         _hits += 1;
     }
-
+   /**
+     * Compare function needed for Collection.sort
+     * @param o
+     * @return -1 if ASC, 1 for DESC, 0 for EQUAL
+     */
     public int compareTo(cshItem o) {
-        return -1;
+        if(this.Hits()>o.Hits())
+            return -1;
+        else
+            if(this.Hits()<o.Hits())
+                return 1;
+            else
+                if(this.Size()>o.Size())
+                    return this.Hits()>0 ? -1 : 1;
+                else
+                    if(this.Size()<o.Size())
+                        return this.Hits()>0 ? 1 : -1;
+                    else
+                        return 0;
     }
 }
