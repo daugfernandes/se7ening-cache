@@ -218,25 +218,29 @@ public class cshStore {
         // test for existance. if so, the element will be removed
 
         if(i > -1) {
+
             int j = _index.get(i).Index();
             int sz = _items.get(j).Size();
-            _actualsize -= sz;
+
+            _actualsize += p_size - sz;
             _sizeremoved += sz;
-            _items.remove(j);
-            _index.remove(i);
+            
+            cshItem item = _items.get(j);
+            item.setSize(p_size);
+            item.setValue(p_value);
+
+        } else {
+
+            add_no_test(p_key, p_value, p_size, p_expire_in_seconds);
+
+            // as new elements are always added to the end of the Indexes list
+            // we try here to avoid the sort operation when the hashcode of the
+            // new element is greater than the hashcode of the last element on
+            // the list, which is the greatest hashcode existing.
+
+            if(_index.size() > 1 && hc < _index.get(_index.size() - 2).Hash())
+                sort();
         }
-
-        // add a new element w/o perfoming the existance test
-
-        add_no_test(p_key, p_value, p_size, p_expire_in_seconds);
-
-        // as new elements are always added to the end of the Indexes list
-        // we try here to avoid the sort operation when the hashcode of the
-        // new element is greater than the hashcode of the last element on
-        // the list, which is the greatest hashcode existing.
-
-        if(_index.size() > 1 && hc < _index.get(_index.size() - 2).Hash())
-            sort();
     }
 
     /**

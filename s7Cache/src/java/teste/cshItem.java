@@ -81,18 +81,19 @@ public class cshItem {
         return _value;
     }
 
-    /**
-     * Selector
-     * @return Size of the Item's value.
-     */
+    public void setValue(Object p_value) {
+        _value = p_value;
+        _hits = 0;
+    }
+
     public int Size() {
         return _size;
     }
 
-    /**
-     * Selector for the number of successfull hits.
-     * @return
-     */
+    public void setSize(int p_size) {
+        _size = p_size;
+    }
+
     public int Hits() {
         return _hits;
     }
@@ -109,5 +110,9 @@ public class cshItem {
      */
     protected void Hit() {
         _hits += 1;
+    }
+
+    public int compareTo(cshItem o) {
+        return -1;
     }
 }

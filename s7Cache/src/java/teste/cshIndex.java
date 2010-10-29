@@ -36,8 +36,8 @@ package teste;
  */
 public class cshIndex implements Comparable<cshIndex> {
 
-    private int _i;
-    private int _hashcode;
+    int _i;
+    int _hashcode;
 
     /**
      * Constructor
