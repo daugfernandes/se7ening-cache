@@ -100,7 +100,7 @@ public class cshStoreTest {
     @Test
     public void testItemsSort() {
 
-        cshStore store = new cshStore(100, 20000);
+        cshStore store = new cshStore(5, 2000000);
 
         store.add("a1", "aaa1a", 10, 10);
         store.add("a2", "aaa2a", 10, 10);
