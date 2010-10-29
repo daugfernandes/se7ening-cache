@@ -39,12 +39,12 @@ public class cshStore {
     // TODO: onAdd check if there is space and/or capacity
 
     int _capacity = 0;
-    int _maxsize = 0;
-    int _actualsize = 0;
+    int _maxSize = 0;
+    int _actualSize = 0;
     boolean _indexSorted = true;
-    int _totalgets = 0;
-    int _totalhits = 0;
-    int  _sizeremoved = 0;
+    int _totalGets = 0;
+    int _totalHits = 0;
+    int _sizeRemoved = 0;
 
     // register Life
     private tmtEvent _life;
@@ -59,11 +59,11 @@ public class cshStore {
      */
     public cshStore(int p_capacity, int p_maxsize) {
         _capacity = p_capacity;
-        _maxsize = p_maxsize;
-        _actualsize = 0;
-        _totalgets = 0;
-        _totalhits = 0;
-        _sizeremoved = 0;
+        _maxSize = p_maxsize;
+        _actualSize = 0;
+        _totalGets = 0;
+        _totalHits = 0;
+        _sizeRemoved = 0;
 
         _index = new java.util.ArrayList<cshIndex>();
         _items = new java.util.ArrayList<cshItem>();
@@ -72,16 +72,16 @@ public class cshStore {
     }
 
     /**
-     * Geter of the indexes list
-     * @return List<cshIndexes)
+     * Selector
+     * @return Indexes list.
      */
     public java.util.List<cshIndex> getIndexes() {
         return _index;
     }
 
 /**
-     * Geter of the items list
-     * @return List<cshItems)
+     * Selector
+     * @return Items list.
      */
     public java.util.List<cshItem> getItems() {
         return _items;
@@ -96,7 +96,7 @@ public class cshStore {
 
         // for activity mesaure
 
-        _totalgets += 1;
+        _totalGets += 1;
 
         // event logging
 
@@ -120,7 +120,7 @@ public class cshStore {
 
             csI.Hit();
 
-            _totalhits += 1;
+            _totalHits += 1;
 
             return csI;
         }
@@ -196,6 +196,7 @@ public class cshStore {
         // uses java build in Collections.sort method
         // please refer to csgIndex class for the @Overrided compareTo method
         java.util.Collections.sort(_index);
+        _indexSorted = true;
 
         // log event for debug purpose only
         _life.LastEvent().Stop();
@@ -210,7 +211,8 @@ public class cshStore {
      * @param p_size Estimated, if not known, size of the Object (bytes).
      * @param p_expire_in_seconds Relative time of expiration in seconds.
      */
-    public void add(String p_key, Object p_value, int p_size, int p_expire_in_seconds) {
+    public void add(String p_key, Object p_value, int p_size,
+                    int p_expire_in_seconds) {
 
         int hc = p_key.hashCode();
         int i = get_index(_index, hc);
@@ -222,12 +224,14 @@ public class cshStore {
             int j = _index.get(i).Index();
             int sz = _items.get(j).Size();
 
-            _actualsize += p_size - sz;
-            _sizeremoved += sz;
+            _actualSize += p_size - sz;
+            _sizeRemoved += sz;
             
             cshItem item = _items.get(j);
             item.setSize(p_size);
             item.setValue(p_value);
+
+            _indexSorted = false;
 
         } else {
 
@@ -251,10 +255,14 @@ public class cshStore {
      * @param p_size Estimated, if not known, size of the Object (bytes).
      * @param p_expire_in_seconds Relative time of expiration in seconds.
      */
-    public void add_no_test(String p_key, Object p_value, int p_size, int p_expire_in_seconds) {
+    public void add_no_test(String p_key, Object p_value, int p_size, 
+                            int p_expire_in_seconds) {
+
         _items.add(new cshItem(p_key, p_value, p_size, p_expire_in_seconds));
         _index.add(new cshIndex(_index.size(), p_key.hashCode()));
-        _actualsize += p_size;
+        _actualSize += p_size;
+        _indexSorted = false;
+
     }
 
 }
