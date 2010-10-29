@@ -104,8 +104,8 @@ public class cshStoreTest {
 
         thisevent.addEvent(new tmtEvent("testRandomGet", null));
 
-        int number_of_elements = 2000000;
-        int number_of_tests = 20;
+        int number_of_elements = 1000000;
+        int number_of_tests = 20000;
 
         System.out.println("testeRandomGet");
         System.out.println("==============");
@@ -126,6 +126,8 @@ public class cshStoreTest {
             Object newObject="iuyiuyiuyiuyiuyiuy:".concat(Integer.toString(i));
             cs.add_no_test(newKey, newObject,10,0);
         }
+
+        cs.add("a-5", "zzzzzzzzzzzzzzz", 2000, 0);
 
         thisevent.LastEvent().StopLastEvent();
 
@@ -155,6 +157,8 @@ public class cshStoreTest {
             // teste for equal; should be equal
             assertEquals(((cshItem)o).Value().equals(sV), true);
         }
+
+        assertEquals("zzzzzzzzzzzzzzz".equals(((cshItem)cs.get("a-5")).Value()),true);
         
         thisevent.LastEvent().StopLastEvent();
         thisevent.StopLastEvent();
